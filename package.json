@@ -3,9 +3,24 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Control your Duux Whisper Flex 2 smart fan from the CLI",
+  "keywords": [
+    "duux",
+    "whisper-flex",
+    "smart-fan",
+    "cli",
+    "tui",
+    "ink",
+    "home-automation"
+  ],
+  "license": "MIT",
+  "author": "Erwann Mest <m@kud.io>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kud/duux-cli.git"
+  },
+  "homepage": "https://github.com/kud/duux-cli#readme",
+  "bugs": {
+    "url": "https://github.com/kud/duux-cli/issues"
   },
   "bin": {
     "duux": "dist/index.js"
