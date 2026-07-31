@@ -1,6 +1,6 @@
 {
   "name": "@kud/duux-cli",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "type": "module",
   "description": "Control your Duux Whisper Flex 2 smart fan from the CLI",
   "keywords": [
