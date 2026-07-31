@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { createSession, type Session, type FanSessionState } from "@kud/duux"
+import { localTransport } from "../lib/transport.js"
 
 const initialState: FanSessionState = {
   deviceId: null,
@@ -15,7 +16,9 @@ const useSession = () => {
   const sessionRef = useRef<Session | null>(null)
 
   useEffect(() => {
-    const session = createSession()
+    // Undefined when no local broker is configured, which leaves the session
+    // on its default cloud transport.
+    const session = createSession({ transport: localTransport() })
     sessionRef.current = session
     setState({ ...session.state })
     session.on("change", (next) => setState({ ...next }))

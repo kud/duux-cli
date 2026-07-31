@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.2.0 — 2026-07-31
+
+### Highlights
+
+- **New: `duux broker` — control the fan through a local MQTT broker.** Duux's cloud refuses control for most accounts (both the status and command endpoints answer `Not_Allowed`), and their own broker rejects any credentials obtainable from the API. The way through is to run an MQTT broker on your own network and redirect `collector3.cloudgarden.nl` to it by DNS — the fan is the client, so it connects to you instead of Duux, and no permission is needed from anyone. `duux broker <host>` points the CLI at it, `duux broker` shows the current setting, `duux broker clear` goes back to the cloud. When set, `duux status`, `duux debug` and the interactive TUI all route through it.
+- **New: `plans/local-broker.md`** documents the full setup — a self-signed certificate (generated for you at `~/.config/duux/broker/`, with the hostname correctly in its SAN list), a Mosquitto config, the DNS redirect, and the power-cycle the fan needs to pick it up. It also lists the open protocol questions this unblocks.
+
+---
+
 ## 0.1.3 — 2026-07-31
 
 ### Highlights

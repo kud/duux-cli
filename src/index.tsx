@@ -13,6 +13,7 @@ import { status } from "./commands/status.js"
 import { debug } from "./commands/debug.js"
 import { switchDevice, listPairedDevices } from "./commands/devices.js"
 import { prefs } from "./commands/prefs.js"
+import { broker } from "./commands/broker.js"
 
 // Read the version from package.json so the CLI never drifts from the release.
 // Resolves from both src/ (dev) and dist/ (published) — each is one level under root.
@@ -59,6 +60,15 @@ program
   .command("prefs")
   .description("Edit preferences: icon style")
   .action(prefs)
+
+program
+  .command("broker")
+  .argument("[host]", 'Broker host, or "clear" to go back to the cloud')
+  .option("-p, --port <port>", "Broker port", "443")
+  .description("Show or set the local MQTT broker used to reach the fan")
+  .action((host: string | undefined, opts: { port?: string }) => {
+    broker(host, opts)
+  })
 
 program
   .command("debug")

@@ -1,5 +1,6 @@
 import chalk from "chalk"
 import { sendCommand, getStatus } from "@kud/duux"
+import { localTransport } from "../lib/transport.js"
 
 // Raw command passthrough — sendCommand() takes the already-built "tune set
 // <param> <value>" string directly, bypassing @kud/duux's typed builders
@@ -12,10 +13,10 @@ import { sendCommand, getStatus } from "@kud/duux"
 const debug = async (command: string): Promise<void> => {
   process.stdout.write(chalk.gray(`→ ${command}\n`))
 
-  await sendCommand(command)
+  await sendCommand(command, localTransport())
   process.stdout.write(chalk.green("✔ sent\n\n"))
 
-  const fan = await getStatus()
+  const fan = await getStatus(localTransport())
   process.stdout.write(chalk.bold("Fan reports:\n"))
   process.stdout.write(`${JSON.stringify(fan, null, 2)}\n`)
 }

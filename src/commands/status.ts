@@ -1,5 +1,6 @@
 import chalk from "chalk"
 import { getStatus, getCurrentDevice, CONFIG_PATH } from "@kud/duux"
+import { localTransport } from "../lib/transport.js"
 
 const header = () => `${chalk.bold("Duux")}${chalk.dim(" · status")}\n\n`
 
@@ -31,7 +32,7 @@ const status = async (): Promise<void> => {
   process.stdout.write(label("Fan", device.displayName))
 
   try {
-    const fan = await getStatus()
+    const fan = await getStatus(localTransport())
     process.stdout.write(label("Connection", "reachable", ok))
     process.stdout.write(label("Power", boolLabel(fan.power)))
     process.stdout.write(label("Speed", `${fan.speed}/30`))
