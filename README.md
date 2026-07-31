@@ -1,5 +1,9 @@
 <div align="center">
 
+<img src="assets/icon.svg" alt="" width="88" height="88">
+
+# 🌀 duux-cli
+
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)
 ![npm](https://img.shields.io/npm/v/@kud/duux-cli?style=flat-square&color=CB3837)
