@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Box, Text, useApp, useInput, useStdout } from "ink"
 import { getCurrentDevice, type Device, type FanMode } from "@kud/duux"
 import { useSession } from "./hooks/use-session.js"
@@ -29,10 +29,28 @@ const App = () => {
     setTimer,
   } = useSession()
 
+  // A pending local value outranks the fan's reported one until the fan
+  // confirms it. The session only refreshes `fan` on a poll (30s) or an MQTT
+  // push — never on a setter — so reading `reported` first makes every press
+  // within one round trip compute from the same stale base, and holding an
+  // arrow to ramp the speed lands one step instead of many.
   const row = ROWS[cursor]!
   const param = FAN_PARAMS[row.key]
   const reported = row.value(state.fan)
-  const currentValue = reported ?? optimistic[row.key] ?? null
+  const currentValue = optimistic[row.key] ?? reported ?? null
+
+  useEffect(() => {
+    setOptimistic((prev) => {
+      const pending = Object.entries(prev).filter(
+        ([key, value]) =>
+          ROWS.find((candidate) => candidate.key === key)?.value(state.fan) !==
+          value,
+      )
+      return pending.length === Object.keys(prev).length
+        ? prev
+        : (Object.fromEntries(pending) as Partial<Record<FanParamKey, string>>)
+    })
+  }, [state.fan])
 
   const remember = (label: string, value?: string) => {
     setLastAction(label)

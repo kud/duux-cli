@@ -88,8 +88,8 @@ const RowView = ({
 }) => {
   const param = FAN_PARAMS[row.key]
   const reported = row.value(fan)
-  const rawValue = reported ?? optimistic ?? null
-  const unconfirmed = reported === null && optimistic !== undefined
+  const rawValue = optimistic ?? reported ?? null
+  const unconfirmed = optimistic !== undefined
   const icon = iconFor(row.key, iconStyle)
 
   const valueNode = (() => {
