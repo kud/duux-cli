@@ -4,6 +4,26 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.3.0 — 2026-08-01
+
+### Highlights
+
+- **`duux doctor` — one command that checks your whole setup.** Walks account, fan and control path in the order they actually depend on each other, then names the single next thing to fix rather than leaving you to work it out from a wall of output.
+
+- **`duux broker setup` — guided setup for local control.** Detects your machine's network address, generates a TLS certificate for `collector3.cloudgarden.nl` (with the hostname correctly in its SAN list, so the CLI verifies it normally rather than bypassing the check), writes a Mosquitto config, and prints the three steps only you can do: start the broker, redirect the hostname on your router, power-cycle the fan. Previously all of this was manual.
+- **`duux broker check` — diagnoses the whole path.** Walks the same chain the fan has to walk, in order — broker configured, certificate present, Mosquitto installed, broker reachable, DNS redirected — so the first failure shown is the thing actually blocking control rather than a downstream symptom.
+- **New documentation page, "Local control"**, explaining why Duux's cloud refuses control, how MQTT and the DNS redirect work, and what to do when the fan doesn't connect.
+
+### Fixes
+
+- **The `Not_Allowed` error now tells you what to do about it.** Both `duux status` and the TUI previously showed the raw API refusal with no way forward; they now point at `duux broker setup`.
+- **Cancelling a prompt with Ctrl-C exits quietly** instead of printing "User force closed the prompt" as an error.
+- Replaced a shell-out for detecting Mosquitto with a plain PATH scan, removing a Node deprecation warning about passing arguments to a shell.
+
+Also note the command surface changed shape: `duux broker <host>` is now `duux broker set <host>`, alongside the new `setup`, `check` and existing `clear`.
+
+---
+
 ## 0.2.0 — 2026-07-31
 
 ### Highlights

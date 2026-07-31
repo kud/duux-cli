@@ -13,7 +13,13 @@ import { status } from "./commands/status.js"
 import { debug } from "./commands/debug.js"
 import { switchDevice, listPairedDevices } from "./commands/devices.js"
 import { prefs } from "./commands/prefs.js"
-import { broker } from "./commands/broker.js"
+import {
+  show as showBroker,
+  setup as setupBroker,
+  setHost as setBrokerHost,
+  clear as clearBroker,
+} from "./commands/broker.js"
+import { doctor, brokerDoctor } from "./commands/doctor.js"
 
 // Read the version from package.json so the CLI never drifts from the release.
 // Resolves from both src/ (dev) and dist/ (published) — each is one level under root.
@@ -61,14 +67,37 @@ program
   .description("Edit preferences: icon style")
   .action(prefs)
 
-program
+const brokerCommand = program
   .command("broker")
-  .argument("[host]", 'Broker host, or "clear" to go back to the cloud')
+  .description("Control the fan through a broker on your own network")
+  .action(showBroker)
+
+brokerCommand
+  .command("setup")
+  .description("Set up a local broker, step by step")
+  .action(setupBroker)
+
+brokerCommand
+  .command("check")
+  .description("Test the path from this machine to the fan")
+  .action(brokerDoctor)
+
+brokerCommand
+  .command("set")
+  .argument("<host>", "Broker address on your network")
   .option("-p, --port <port>", "Broker port", "443")
-  .description("Show or set the local MQTT broker used to reach the fan")
-  .action((host: string | undefined, opts: { port?: string }) => {
-    broker(host, opts)
-  })
+  .description("Point the CLI at a broker you already run")
+  .action(setBrokerHost)
+
+brokerCommand
+  .command("clear")
+  .description("Go back to using the Duux cloud")
+  .action(clearBroker)
+
+program
+  .command("doctor")
+  .description("Check your setup and say what to fix next")
+  .action(doctor)
 
 program
   .command("debug")
@@ -120,6 +149,11 @@ const run = async (): Promise<void> => {
 }
 
 run().catch((error: unknown) => {
+  // Ctrl-C at an inquirer prompt is a cancellation, not a failure — exit
+  // quietly rather than printing "User force closed the prompt".
+  if (error instanceof Error && error.name === "ExitPromptError")
+    process.exit(0)
+
   const message = error instanceof Error ? error.message : String(error)
   // Commands that already reported the failure (e.g. auth, via its spinner)
   // mark it handled; everything else prints one clean line, never a stack trace.

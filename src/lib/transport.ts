@@ -1,14 +1,13 @@
 import { readFileSync } from "node:fs"
-import { homedir } from "node:os"
-import { join } from "node:path"
 import { createMqttTransport, type Transport } from "@kud/duux"
 import { readBroker } from "./broker.js"
+import { CA_PATH } from "./broker-paths.js"
 
 // A local broker is served with a certificate you generated yourself, so the
 // pinned Cloudgarden one in @kud/duux is wrong for it. Read yours if it is
 // where `duux broker` puts it; otherwise let the connection fail loudly rather
 // than silently trusting anything.
-const CA_PATH = join(homedir(), ".config", "duux", "broker", "ca.crt")
+
 
 const readLocalCa = (): string | undefined => {
   try {
@@ -31,4 +30,4 @@ const localTransport = (): Transport | undefined => {
   })
 }
 
-export { localTransport, CA_PATH }
+export { localTransport }

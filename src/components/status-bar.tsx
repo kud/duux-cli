@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { SessionState } from "../hooks/use-session.js"
 import type { Device } from "@kud/duux"
+import { isCloudRefusal } from "../lib/errors.js"
 
 type Props = {
   device: Device | null
@@ -65,6 +66,13 @@ const StatusBar = ({ device, state, lastAction }: Props) => {
           </Box>
         )}
       </Box>
+
+      {isCloudRefusal(state.error) && (
+        <Text color="yellow" wrap="truncate-end">
+          Duux's cloud blocks control on this account — quit and run{" "}
+          <Text bold>duux broker setup</Text> to use your own network.
+        </Text>
+      )}
     </Box>
   )
 }

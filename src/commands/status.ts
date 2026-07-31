@@ -1,6 +1,7 @@
 import chalk from "chalk"
 import { getStatus, getCurrentDevice, CONFIG_PATH } from "@kud/duux"
 import { localTransport } from "../lib/transport.js"
+import { explainError } from "../lib/errors.js"
 
 const header = () => `${chalk.bold("Duux")}${chalk.dim(" · status")}\n\n`
 
@@ -49,7 +50,11 @@ const status = async (): Promise<void> => {
     )
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    process.stdout.write(label("Connection", message, fail))
+    const [reason, ...guidance] = explainError(message).split("\n")
+    process.stdout.write(label("Connection", reason ?? message, fail))
+    for (const hint of guidance) {
+      process.stdout.write(`  ${chalk.yellow(hint)}\n`)
+    }
     process.stdout.write(
       label("Config", CONFIG_PATH, chalk.gray("(store location)")),
     )
