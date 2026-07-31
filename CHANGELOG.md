@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.1.3 — 2026-07-31
+
+### Highlights
+
+- **Horizontal oscillation is now a sweep-angle control, not a toggle.** The fan's `horosc` parameter takes four positions — 0 (off) through 3 — but the TUI modelled it as on/off, so presets 2 and 3 were unreachable. It's now an arrow-adjustable 0–3 range row, and `duux status` reports it as "sweep N of 3" instead of on/off. Requires `@kud/duux@0.3.0`.
+
+### Fixes
+
+- Fixed the Speed icon rendering as an empty box in Nerd Font mode. The glyph used (U+F72E) isn't present in current Nerd Font builds; it now uses the plain Font Awesome bolt (U+F0E7), which is.
+- Fixed the status bar wrapping mid-phrase. A long error message stole width from the "last action" indicator, splitting it across two lines. The indicator now holds its width and long errors truncate instead.
+- Range rows no longer collide with their values. The progress bar was wide enough that a row carrying the pending-change marker overflowed its panel, squashing the gaps and misaligning that row against the others. The bar is narrower and the marker shorter.
+
+---
+
 ## 0.1.2 — 2026-07-31
 
 ### Fixes

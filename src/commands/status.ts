@@ -36,7 +36,12 @@ const status = async (): Promise<void> => {
     process.stdout.write(label("Power", boolLabel(fan.power)))
     process.stdout.write(label("Speed", `${fan.speed}/30`))
     process.stdout.write(label("Mode", fan.mode ?? "unknown"))
-    process.stdout.write(label("H-oscillation", boolLabel(fan.swing)))
+    process.stdout.write(
+      label(
+        "H-oscillation",
+        fan.swing === 0 ? "off" : `sweep ${fan.swing} of 3`,
+      ),
+    )
     process.stdout.write(label("V-oscillation", boolLabel(fan.tilt)))
     process.stdout.write(
       label("Timer", fan.timer > 0 ? `${fan.timer}h` : "off"),

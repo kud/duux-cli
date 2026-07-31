@@ -70,6 +70,9 @@ const App = () => {
     } else if (row.key === "timer") {
       void setTimer(next)
       remember(`timer ${next}h`, String(next))
+    } else if (row.key === "horosc") {
+      void setOscillation("horizontal", next)
+      remember(next === 0 ? "h-osc off" : `h-osc ${next}`, String(next))
     }
   }
 
@@ -94,10 +97,6 @@ const App = () => {
       case "power":
         void setPower(next)
         remember(`power ${next ? "on" : "off"}`, next ? "on" : "off")
-        return
-      case "horosc":
-        void setOscillation("horizontal", next)
-        remember(`h-osc ${next ? "on" : "off"}`, next ? "on" : "off")
         return
       case "verosc":
         void setOscillation("vertical", next)

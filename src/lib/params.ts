@@ -39,10 +39,18 @@ const MODE: EnumParam<FanMode> = {
   options: Object.keys(FAN_MODE_VALUES) as FanMode[],
 }
 
-// Horizontal oscillation ("horosc"): modelled as a boolean because that is
-// all @kud/duux's setOscillation currently accepts. The API spec flags this
-// as unverified — it may really be a 0-3 sweep-angle preset. PROVISIONAL.
-const HOROSC: BooleanParam = { kind: "boolean" }
+// Horizontal oscillation ("horosc"): a four-position sweep-angle preset, 0
+// (off) to 3 — confirmed against the Home Assistant integrations built on the
+// same MQTT protocol, and enforced by @kud/duux's horoscCommand RangeError.
+// This was modelled as a boolean until that confirmation arrived, which threw
+// away presets 2 and 3.
+const HOROSC: RangeParam = {
+  kind: "range",
+  min: 0,
+  max: 3,
+  step: 1,
+  bigStep: 3,
+}
 
 // Vertical oscillation ("verosc"): same provisional boolean assumption as
 // horosc, on the tilt axis. Also unverified against a physical fan.

@@ -30,7 +30,7 @@ const ROWS: Row[] = [
   {
     key: "horosc",
     label: "H-Oscillation",
-    value: (fan) => boolText(fan?.swing),
+    value: (fan) => (fan ? String(fan.swing) : null),
   },
   {
     key: "verosc",
@@ -52,7 +52,7 @@ const ROWS: Row[] = [
   },
 ]
 
-const BAR_WIDTH = 20
+const BAR_WIDTH = 14
 
 const RangeBar = ({
   min,
@@ -137,7 +137,7 @@ const RowView = ({
         {row.label.padEnd(14)}
       </Text>
       {valueNode}
-      {unconfirmed && <Text color="gray"> (unconfirmed)</Text>}
+      {unconfirmed && <Text color="gray"> ·pending</Text>}
     </Box>
   )
 }

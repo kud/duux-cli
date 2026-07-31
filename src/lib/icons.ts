@@ -4,7 +4,11 @@ import type { IconStyle } from "./preferences.js"
 // in source (editors and diff tools silently mangle them).
 const ICONS: Record<string, string> = {
   power: "\u{f011}",
-  speed: "\u{f72e}",
+  // U+F72E rendered as a missing-glyph box on a current Nerd Font; U+F0E7 is
+  // plain Font Awesome and present in every build. Prefer the FA range here —
+  // the higher Material/Octicon planes are the ones that come and go between
+  // Nerd Font releases.
+  speed: "\u{f0e7}",
   mode: "\u{f085}",
   horosc: "\u{f021}",
   verosc: "\u{f021}",

@@ -26,8 +26,12 @@ const useSession = () => {
   const setSpeed = (speed: number) => sessionRef.current?.setSpeed(speed)
   const setMode = (mode: Parameters<Session["setMode"]>[0]) =>
     sessionRef.current?.setMode(mode)
-  const setOscillation = (axis: "horizontal" | "vertical", on: boolean) =>
-    sessionRef.current?.setOscillation(axis, on)
+  // Horizontal takes a 0-3 sweep preset, vertical a plain toggle — the core
+  // narrows per axis, so the shared signature has to admit both.
+  const setOscillation = (
+    axis: "horizontal" | "vertical",
+    on: number | boolean,
+  ) => sessionRef.current?.setOscillation(axis, on)
   const setNightMode = (on: boolean) => sessionRef.current?.setNightMode(on)
   const setTimer = (hours: number) => sessionRef.current?.setTimer(hours)
 
