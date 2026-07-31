@@ -77,7 +77,8 @@ const setup = async (): Promise<void> => {
       {
         type: "confirm",
         name: "regenerate",
-        message: "A certificate already exists. Replace it?",
+        message:
+          "Replace the existing certificate? Only needed if this machine's address changed",
         default: false,
       },
     ])
