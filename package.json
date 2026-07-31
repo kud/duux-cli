@@ -1,0 +1,46 @@
+{
+  "name": "@kud/duux-cli",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Control your Duux Whisper Flex 2 smart fan from the CLI",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kud/duux-cli.git"
+  },
+  "bin": {
+    "duux": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsx src/index.tsx",
+    "dev:discover": "tsx src/index.tsx discover",
+    "build": "tsup src/index.tsx --format esm --dts",
+    "build:watch": "tsup src/index.tsx --format esm --dts --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "link": "npm run build && npm link",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@kud/duux": "0.1.0",
+    "chalk": "6.0.0",
+    "commander": "15.0.0",
+    "ink": "7.1.1",
+    "ink-spinner": "5.0.0",
+    "inquirer": "14.0.2",
+    "ora": "9.4.1",
+    "react": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.2",
+    "@types/react": "19.2.18",
+    "tsup": "8.5.1",
+    "tsx": "4.23.1",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
