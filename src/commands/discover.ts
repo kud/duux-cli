@@ -3,17 +3,17 @@ import chalk from "chalk"
 import inquirer from "inquirer"
 import {
   discover as discoverFans,
-  writeTenantId,
   upsertDevice,
   getCurrentDevice,
+  sensorLabel,
   type Discovered,
 } from "@kud/duux"
 import { getStoredAccessToken } from "../lib/auth.js"
 
 // CLI driver around @kud/duux's pure discover(): adds the spinner, persists
-// the tenant + fan list, and an optional picker when more than one fan is
-// found. discover() itself never touches config.ts (see its own comment),
-// so all persistence happens here.
+// the fan list, and an optional picker when more than one fan is found.
+// discover() itself never touches config.ts (see its own comment), so all
+// persistence happens here.
 const discover = async (
   opts: { select?: boolean } = {},
 ): Promise<Discovered> => {
@@ -26,8 +26,6 @@ const discover = async (
     throw error
   })
 
-  writeTenantId(result.tenantId)
-
   if (result.devices.length === 0) {
     spinner.warn("Signed in, but no fans are registered on this account.")
     return result
@@ -35,9 +33,9 @@ const discover = async (
 
   spinner.succeed(`Found ${result.devices.length} fan(s):`)
   for (const device of result.devices) {
-    process.stdout.write(`  ${chalk.cyan(device.displayName)}\n`)
+    process.stdout.write(`  ${chalk.cyan(sensorLabel(device))}\n`)
     upsertDevice(
-      { id: device.id, type: device.type, displayName: device.displayName },
+      { id: device.id, type: device.type, displayName: sensorLabel(device) },
       { makeCurrent: false },
     )
   }
@@ -63,7 +61,7 @@ const discover = async (
               name: "id",
               message: "Which fan do you want to use?",
               choices: result.devices.map((device) => ({
-                name: device.displayName,
+                name: sensorLabel(device),
                 value: device.id,
               })),
             },
@@ -73,10 +71,10 @@ const discover = async (
   upsertDevice({
     id: selected.id,
     type: selected.type,
-    displayName: selected.displayName,
+    displayName: sensorLabel(selected),
   })
   process.stdout.write(
-    chalk.green(`✔ Active fan set to ${selected.displayName}\n`),
+    chalk.green(`✔ Active fan set to ${sensorLabel(selected)}\n`),
   )
 
   return result

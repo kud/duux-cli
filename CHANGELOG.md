@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.1.2 — 2026-07-31
+
+### Fixes
+
+- **`duux discover` works again.** It previously crashed for everyone with `Cannot read properties of undefined (reading 'find')`. The cause was in the core library, `@kud/duux`, which read the account's tenant from a v4 API field that no longer exists; discovery has since moved to the v5 API, which needs no tenant at all. Fixed by upgrading to `@kud/duux@0.2.0`.
+- **Fans with no custom name now display correctly.** A Duux fan has no `displayName` until you rename it in the Duux app, and the CLI used to print nothing for those. It now falls back to the factory identifier (e.g. `DUUX.1.356505`) via the core's new `sensorLabel()` helper.
+- **Failures from the Duux API are now reported instead of swallowed.** The API answers a refused request with HTTP 200 and the reason in the body, which the core previously read as success. `duux status` against a device the account can't read now says exactly that, naming the endpoint and the reason.
+- Known limitation: live control (`duux status` and the interactive TUI) still doesn't work against Cloudgarden's cloud — it refuses status and command requests for this account with `Not_Allowed`, and the MQTT alternative needs broker credentials that aren't obtainable from the REST API. `discover`, `devices`, `switch`, and `prefs` all work.
+
+---
+
 ## 0.1.1 — 2026-07-31
 
 ### Highlights
