@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.3.1 — 2026-08-01
+
+### Fixes
+
+- **The generated Mosquitto config now starts.** Started with `sudo` to bind port 443, Mosquitto drops privileges to `nobody` by default, which cannot read the broker's private key — it sits at mode 600 inside your home directory, so the broker died on startup with an OpenSSL permission error. The config now drops to your own user instead, which keeps the key's permissions as tight as they were rather than loosening them to suit the daemon.
+
+---
+
 ## 0.3.0 — 2026-08-01
 
 ### Highlights

@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process"
 import { mkdirSync, writeFileSync, existsSync, chmodSync } from "node:fs"
-import { networkInterfaces } from "node:os"
+import { networkInterfaces, userInfo } from "node:os"
 import { join } from "node:path"
 import { BROKER_DIR, CA_PATH, KEY_PATH, CONF_PATH } from "./broker-paths.js"
 
@@ -48,6 +48,12 @@ keyUsage         = critical, digitalSignature, keyCertSign, keyEncipherment
 const mosquittoConfig = (port: number): string => `# duux-cli local broker.
 # The fan dials mqtts://${DUUX_HOST}:${port}. Point that hostname at this
 # machine by DNS and the fan connects here instead of Duux's cloud.
+
+# Started with sudo to bind a privileged port, mosquitto then drops privileges
+# — by default to "nobody", which cannot read a key owned by you inside your
+# home directory. Dropping to you instead keeps the key at mode 600 and
+# readable, rather than loosening its permissions to suit the daemon.
+user ${userInfo().username}
 
 listener ${port}
 protocol mqtt
