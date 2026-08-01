@@ -26,7 +26,9 @@ const boolLabel = (value: boolean | null): string =>
 const sweepLabel = (value: number | null, labels: readonly string[]): string =>
   value === null ? "unknown" : (labels[value] ?? String(value))
 
-const status = async (): Promise<void> => {
+const status = async (opts: { json?: boolean } = {}): Promise<void> => {
+  if (opts.json) return statusJson()
+
   process.stdout.write(header())
 
   const device = getCurrentDevice()
@@ -51,6 +53,14 @@ const status = async (): Promise<void> => {
     process.stdout.write(label("V-oscillation", sweepLabel(fan.verosc, VEROSC_LABELS)))
     process.stdout.write(label("Night mode", boolLabel(fan.night)))
     process.stdout.write(label("Child lock", boolLabel(fan.lock)))
+    if (fan.battery) {
+      process.stdout.write(
+        label(
+          "Battery",
+          `${fan.battery.level}%${fan.battery.charging ? " (charging)" : ""}`,
+        ),
+      )
+    }
     process.stdout.write(
       label("Timer", fan.timer ? `${fan.timer}h` : "off"),
     )
@@ -64,6 +74,27 @@ const status = async (): Promise<void> => {
     process.stdout.write(
       label("Config", CONFIG_PATH, chalk.gray("(store location)")),
     )
+    process.exitCode = 1
+  }
+}
+
+// Machine-readable output is the whole point of a CLI over the app: state that
+// can be piped, compared, or reacted to by anything else on the machine.
+const statusJson = async (): Promise<void> => {
+  const device = getCurrentDevice()
+  if (!device) {
+    process.stdout.write(`${JSON.stringify({ error: "no fan selected" })}\n`)
+    process.exitCode = 1
+    return
+  }
+  try {
+    const fan = await getStatus(localTransport())
+    process.stdout.write(
+      `${JSON.stringify({ device: device.displayName, id: device.id, mac: device.mac, ...fan })}\n`,
+    )
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    process.stdout.write(`${JSON.stringify({ error: message })}\n`)
     process.exitCode = 1
   }
 }

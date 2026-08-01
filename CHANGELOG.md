@@ -4,6 +4,19 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.6.0 — 2026-08-01
+
+### Highlights
+
+- **`duux preset` — named combinations, applied in one go.** `duux preset sleep` sets speed, mode, oscillation, night mode and a timer together. Four are built in (sleep, quiet, boost, away); `duux preset save <name>` captures the fan's current state as your own. The app has timers and schedules but no macros.
+- **`duux status --json`** prints machine-readable state, so the fan can be piped into anything — jq, a cron log, another script.
+- **`duux watch`** streams changes as they happen, printing only what actually changed, with `--json` for one object per line. It polls every 3 seconds rather than the TUI's 30, and picks up changes made from the Duux app too.
+- **Battery level** appears in `status` when the optional battery pack is fitted.
+
+None of these extend what the fan can do — they extend what can *trigger* it. That is the one thing a terminal has over a phone app, and it needed machine-readable output and composable commands rather than any new capability.
+
+---
+
 ## 0.5.0 — 2026-08-01
 
 ### Highlights

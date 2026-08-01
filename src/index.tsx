@@ -19,6 +19,13 @@ import {
   clear as clearBroker,
 } from "./commands/broker.js"
 import { doctor, brokerDoctor } from "./commands/doctor.js"
+import {
+  list as listPresets,
+  apply as applyPreset,
+  save as savePreset,
+  remove as removePreset,
+} from "./commands/preset.js"
+import { watch } from "./commands/watch.js"
 
 // Read the version from package.json so the CLI never drifts from the release.
 // Resolves from both src/ (dev) and dist/ (published) — each is one level under root.
@@ -58,8 +65,47 @@ program
 
 program
   .command("status")
+  .option("--json", "Print state as JSON for scripting")
   .description("Show the current fan's state")
-  .action(status)
+  .action(async (opts: { json?: boolean }) => {
+    await status(opts)
+  })
+
+program
+  .command("watch")
+  .option("--json", "Emit one JSON object per change")
+  .description("Stream state changes as they happen")
+  .action(async (opts: { json?: boolean }) => {
+    await watch(opts)
+  })
+
+const presetCommand = program
+  .command("preset")
+  .argument("[name]", "Preset to apply")
+  .description("Apply a saved combination of settings")
+  .action(async (name?: string) => {
+    if (name) await applyPreset(name)
+    else listPresets()
+  })
+
+presetCommand
+  .command("list")
+  .description("List available presets")
+  .action(listPresets)
+
+presetCommand
+  .command("save")
+  .argument("<name>", "Name for the current state")
+  .description("Save the fan's current state as a preset")
+  .action(async (name: string) => {
+    await savePreset(name)
+  })
+
+presetCommand
+  .command("delete")
+  .argument("<name>", "Preset to remove")
+  .description("Delete a preset you saved")
+  .action(removePreset)
 
 const brokerCommand = program
   .command("broker")
