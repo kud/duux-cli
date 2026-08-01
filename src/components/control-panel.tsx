@@ -125,6 +125,8 @@ const RowView = ({
             ((value - param.min) / Math.max(1, param.max - param.min)) * 100
           }
           width={BAR_WIDTH}
+          color="cyan"
+          trackColor="#2b323d"
         />
         <Text>
           {value}

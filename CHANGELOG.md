@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.7.1 — 2026-08-01
+
+### Fixes
+
+- **The progress bars are flat.** The unfilled remainder used a shade character, which dithers into a textured, faintly three-dimensional strip beside the flat pills and switches around it. Both halves are now solid blocks in cyan and a dark track, via `@kud/ink-ui@0.12.0`'s new colour props.
+
+---
+
 ## 0.7.0 — 2026-08-01
 
 ### Highlights
