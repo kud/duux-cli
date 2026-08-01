@@ -90,7 +90,13 @@ const RowView = ({
 
     if (param.kind === "boolean") {
       const on = rawValue === "on"
-      return <ToggleSwitch on={on} label={on ? "on" : "off"} />
+      return (
+        <ToggleSwitch
+          on={on}
+          label={on ? "on" : "off"}
+          onColor="cyan"
+        />
+      )
     }
 
     if (param.kind === "enum") {

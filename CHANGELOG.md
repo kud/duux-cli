@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.7.2 — 2026-08-01
+
+### Fixes
+
+- **The documentation matches the CLI again.** `tui`, `commands` and `troubleshooting` still described the bracketed interface, the removed `duux prefs` command and its `o` key, and listed `horosc`/`verosc` as unverified booleans and night mode as write-only — all of which changed today. They now document the switches and pills, the `p` presets picker, and `preset` / `watch` / `doctor` / `broker` / `status --json`, and record the oscillation presets and readable night mode as confirmed. The timer's 24h ceiling stays flagged as an assumption, because it still is one.
+- The toggle switches take the panel's cyan rather than ink-ui's default green, matching the pills and bars.
+- The README's `status` example showed an output format the command never produced.
+
+---
+
 ## 0.7.1 — 2026-08-01
 
 ### Fixes
