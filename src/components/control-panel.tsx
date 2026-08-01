@@ -3,7 +3,7 @@ import { Box, Text } from "ink"
 import type { FanState } from "@kud/duux"
 import { FAN_PARAMS, type FanParamKey } from "../lib/params.js"
 import { iconFor } from "../lib/icons.js"
-import { Hotkeys } from "./hotkeys.js"
+import { FooterHints, ProgressBar, ToggleSwitch } from "@kud/ink-ui"
 
 type Row = {
   key: FanParamKey
@@ -54,25 +54,6 @@ const ROWS: Row[] = [
 
 const BAR_WIDTH = 14
 
-const RangeBar = ({
-  min,
-  max,
-  value,
-}: {
-  min: number
-  max: number
-  value: number
-}) => {
-  const ratio = (value - min) / Math.max(1, max - min)
-  const filled = Math.round(Math.max(0, Math.min(1, ratio)) * BAR_WIDTH)
-  return (
-    <Text>
-      <Text color="cyan">{"█".repeat(filled)}</Text>
-      <Text color="gray">{"░".repeat(BAR_WIDTH - filled)}</Text>
-    </Text>
-  )
-}
-
 // One option in a set. Every pill is the same width whether or not it is the
 // chosen one, so moving the selection never shifts the row — and the filled
 // background carries the state as contrast rather than hue alone, which
@@ -107,17 +88,9 @@ const RowView = ({
   const valueNode = (() => {
     if (rawValue === null) return <Text color="gray">n/a</Text>
 
-    // Rendered as a two-position segmented control rather than a single word:
-    // it matches the Duux app, and it keeps every row's value starting in the
-    // same column as the pill and bar rows.
     if (param.kind === "boolean") {
       const on = rawValue === "on"
-      return (
-        <Box columnGap={1}>
-          <Pill label="on" selected={on} />
-          <Pill label="off" selected={!on} />
-        </Box>
-      )
+      return <ToggleSwitch on={on} label={on ? "on" : "off"} />
     }
 
     if (param.kind === "enum") {
@@ -147,7 +120,12 @@ const RowView = ({
 
     return (
       <Box columnGap={1}>
-        <RangeBar min={param.min} max={param.max} value={value} />
+        <ProgressBar
+          value={
+            ((value - param.min) / Math.max(1, param.max - param.min)) * 100
+          }
+          width={BAR_WIDTH}
+        />
         <Text>
           {value}
           {row.key === "timer" ? "h" : ""}/{param.max}
@@ -202,14 +180,14 @@ const ControlPanel = ({
       ))}
     </Box>
     <Box marginTop={2}>
-      <Hotkeys
+      <FooterHints
         hints={[
-          { key: "↑↓", label: "select" },
-          { key: "←→", label: "adjust" },
-          { key: "⇧←→", label: "adjust ×big" },
-          { key: "↵/spc", label: "toggle/cycle" },
-          { key: "p", label: "presets" },
-          { key: "q", label: "quit" },
+          ["↑↓", "select"],
+          ["←→", "adjust"],
+          ["⇧←→", "adjust ×big"],
+          ["↵/spc", "toggle/cycle"],
+          ["p", "presets"],
+          ["q", "quit"],
         ]}
       />
     </Box>

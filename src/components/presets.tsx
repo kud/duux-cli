@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Box, Text, useInput } from "ink"
 import { allPresets, isBuiltIn, type Preset } from "../lib/presets.js"
-import { Hotkeys } from "./hotkeys.js"
+import { FooterHints } from "@kud/ink-ui"
 
 const summarise = (preset: Preset): string =>
   Object.entries(preset)
@@ -71,11 +71,11 @@ const Presets = ({
         })}
       </Box>
       <Box marginTop={2}>
-        <Hotkeys
+        <FooterHints
           hints={[
-            { key: "↑↓", label: "select" },
-            { key: "↵", label: "apply" },
-            { key: "esc", label: "close" },
+            ["↑↓", "select"],
+            ["↵", "apply"],
+            ["esc", "close"],
           ]}
         />
       </Box>
