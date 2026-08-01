@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.8.0 — 2026-08-01
+
+### Highlights
+
+- **`duux rename <name>`** renames the fan, and the change shows in the Duux app too — it is the same edit the app itself makes. A fan has no name until you give it one, so before that the CLI falls back to the factory identifier.
+
+---
+
 ## 0.7.2 — 2026-08-01
 
 ### Fixes

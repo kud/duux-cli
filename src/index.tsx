@@ -11,6 +11,7 @@ import { auth } from "./commands/auth.js"
 import { discover } from "./commands/discover.js"
 import { status } from "./commands/status.js"
 import { debug } from "./commands/debug.js"
+import { rename } from "./commands/rename.js"
 import { switchDevice, listPairedDevices } from "./commands/devices.js"
 import {
   show as showBroker,
@@ -133,6 +134,14 @@ brokerCommand
   .command("clear")
   .description("Go back to using the Duux cloud")
   .action(clearBroker)
+
+program
+  .command("rename")
+  .argument("<name>", "New name for the active fan")
+  .description("Rename the fan (shows in the Duux app too)")
+  .action(async (name: string) => {
+    await rename(name)
+  })
 
 program
   .command("doctor")

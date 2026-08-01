@@ -39,7 +39,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@kud/duux": "0.6.0",
+    "@kud/duux": "0.7.0",
     "@kud/ink-ui": "0.12.0",
     "chalk": "6.0.0",
     "commander": "15.0.0",
