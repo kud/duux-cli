@@ -4,6 +4,18 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.7.0 — 2026-08-01
+
+### Highlights
+
+- **Power, night mode and child lock render as real switches** — a rounded track with the knob at one end, rather than a word. The knob's position carries the state, so it reads without relying on colour.
+
+### Internal
+
+- **Adopted `@kud/ink-ui` instead of hand-rolled components.** The footer hints, progress bars and toggle were built here from scratch; the shared library already had `FooterHints` and `ProgressBar`, and now has `ToggleSwitch` too. `src/components/hotkeys.tsx` is deleted and the other two are gone from this repo.
+
+---
+
 ## 0.6.1 — 2026-08-01
 
 ### Fixes
