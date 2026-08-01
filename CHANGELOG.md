@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.6.1 — 2026-08-01
+
+### Fixes
+
+- **Presets are reachable from the interface.** They shipped as commands only, so `duux preset sleep` worked but the TUI had no idea they existed. Press `p` for a picker; applying one goes through the session, so the panel's values and status line update exactly as they do for a keypress.
+
+---
+
 ## 0.6.0 — 2026-08-01
 
 ### Highlights

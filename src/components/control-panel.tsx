@@ -208,6 +208,7 @@ const ControlPanel = ({
           { key: "←→", label: "adjust" },
           { key: "⇧←→", label: "adjust ×big" },
           { key: "↵/spc", label: "toggle/cycle" },
+          { key: "p", label: "presets" },
           { key: "q", label: "quit" },
         ]}
       />

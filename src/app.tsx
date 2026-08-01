@@ -4,6 +4,8 @@ import { getCurrentDevice, type Device, type FanMode } from "@kud/duux"
 import { useSession } from "./hooks/use-session.js"
 import { StatusBar } from "./components/status-bar.js"
 import { ControlPanel, ROWS } from "./components/control-panel.js"
+import { Presets } from "./components/presets.js"
+import type { Preset } from "./lib/presets.js"
 import { FAN_PARAMS, clampRange, type FanParamKey } from "./lib/params.js"
 import { useDebouncedSend } from "./hooks/use-debounced-send.js"
 
@@ -27,6 +29,25 @@ const App = () => {
     setTimer,
   } = useSession()
   const { send } = useDebouncedSend()
+  const [presetsOpen, setPresetsOpen] = useState(false)
+
+  // Applied through the session rather than the preset command's own sender, so
+  // the panel's optimistic values and status line update the same way they do
+  // for a keypress. Sent immediately — a preset is one deliberate action, not a
+  // burst worth debouncing.
+  const applyPreset = (name: string, preset: Preset) => {
+    if (preset.power !== undefined) void setPower(preset.power)
+    if (preset.mode !== undefined) void setMode(preset.mode)
+    if (preset.speed !== undefined) void setSpeed(preset.speed)
+    if (preset.horosc !== undefined)
+      void setOscillation("horizontal", preset.horosc)
+    if (preset.verosc !== undefined)
+      void setOscillation("vertical", preset.verosc)
+    if (preset.night !== undefined) void setNightMode(preset.night)
+    if (preset.lock !== undefined) void setChildLock(preset.lock)
+    if (preset.timer !== undefined) void setTimer(preset.timer)
+    setLastAction(`preset ${name}`)
+  }
 
   // A pending local value outranks the fan's reported one until the fan
   // confirms it. The session only refreshes `fan` on a poll (30s) or an MQTT
@@ -117,6 +138,14 @@ const App = () => {
       return
     }
 
+    // The Presets panel owns all input while it is open.
+    if (presetsOpen) return
+
+    if (input === "p") {
+      setPresetsOpen(true)
+      return
+    }
+
     if (input === "q") {
       exit()
       return
@@ -164,6 +193,12 @@ const App = () => {
       <Box flexGrow={1} alignItems="center" justifyContent="center">
         {tooNarrow ? (
           <Text color="yellow">Resize terminal to at least 46 columns.</Text>
+        ) : presetsOpen ? (
+          <Presets
+            width={contentWidth}
+            onApply={applyPreset}
+            onExit={() => setPresetsOpen(false)}
+          />
         ) : (
           <ControlPanel
             width={contentWidth}
