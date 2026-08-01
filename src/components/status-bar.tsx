@@ -8,11 +8,12 @@ type Props = {
   device: Device | null
   state: SessionState
   lastAction: string
+  version: string
 }
 
 // Connection and power state are always a glyph + word pair (●/○ + text),
 // never colour alone — colour only reinforces the distinction.
-const StatusBar = ({ device, state, lastAction }: Props) => {
+const StatusBar = ({ device, state, lastAction, version }: Props) => {
   const powerLabel =
     state.fan?.power === null || state.fan?.power === undefined
       ? "unknown"
@@ -31,6 +32,8 @@ const StatusBar = ({ device, state, lastAction }: Props) => {
           <Text color={state.connected ? "green" : "yellow"}>
             {state.connected ? "● connected" : "○ connecting"}
           </Text>
+          <Text color="gray">·</Text>
+          <Text color="gray">v{version}</Text>
         </Box>
 
         <Box columnGap={2}>

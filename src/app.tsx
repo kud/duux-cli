@@ -9,7 +9,7 @@ import type { Preset } from "./lib/presets.js"
 import { FAN_PARAMS, clampRange, type FanParamKey } from "./lib/params.js"
 import { useDebouncedSend } from "./hooks/use-debounced-send.js"
 
-const App = () => {
+const App = ({ version }: { version: string }) => {
   const [device] = useState<Device | null>(() => getCurrentDevice())
   const [cursor, setCursor] = useState(0)
   const [lastAction, setLastAction] = useState("")
@@ -189,7 +189,12 @@ const App = () => {
       paddingX={2}
       paddingY={1}
     >
-      <StatusBar device={device} state={state} lastAction={lastAction} />
+      <StatusBar
+        device={device}
+        state={state}
+        lastAction={lastAction}
+        version={version}
+      />
       <Box flexGrow={1} alignItems="center" justifyContent="center">
         {tooNarrow ? (
           <Text color="yellow">Resize terminal to at least 46 columns.</Text>

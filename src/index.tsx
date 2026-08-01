@@ -6,6 +6,7 @@ import React from "react"
 import chalk from "chalk"
 import inquirer from "inquirer"
 import { readAuthMeta, getCurrentDevice } from "@kud/duux"
+import { notify } from "@kud/cli-update"
 import { App } from "./app.js"
 import { auth } from "./commands/auth.js"
 import { discover } from "./commands/discover.js"
@@ -189,9 +190,14 @@ const ensureReady = async (): Promise<boolean> => {
 }
 
 const run = async (): Promise<void> => {
+  // Before anything else, so the offer appears above the CLI's own output.
+  // Silent unless stdout is a TTY, so `duux status --json | jq` is unaffected,
+  // and it never awaits the network — see @kud/cli-update.
+  await notify({ name: "@kud/duux-cli", version })
+
   if (process.argv.length <= 2) {
     if (!(await ensureReady())) process.exit(0)
-    render(<App />, { alternateScreen: true })
+    render(<App version={version} />, { alternateScreen: true })
   } else {
     await program.parseAsync(process.argv)
   }
