@@ -52,9 +52,16 @@ const HOROSC: RangeParam = {
   bigStep: 3,
 }
 
-// Vertical oscillation ("verosc"): same provisional boolean assumption as
-// horosc, on the tilt axis. Also unverified against a physical fan.
-const VEROSC: BooleanParam = { kind: "boolean" }
+// Vertical oscillation ("verosc"): a three-position tilt preset, 0 (off) /
+// 1 (45°) / 2 (100°). Confirmed the same way as horosc, and corroborated by a
+// real state payload reporting it as an integer.
+const VEROSC: RangeParam = {
+  kind: "range",
+  min: 0,
+  max: 2,
+  step: 1,
+  bigStep: 2,
+}
 
 const NIGHT: BooleanParam = { kind: "boolean" }
 

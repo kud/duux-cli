@@ -6,7 +6,7 @@ import { explainError } from "../lib/errors.js"
 const header = () => `${chalk.bold("Duux")}${chalk.dim(" · status")}\n\n`
 
 const label = (name: string, value: string, marker = "") =>
-  `  ${chalk.gray(name.padEnd(12))}${value}${marker ? ` ${marker}` : ""}\n`
+  `  ${chalk.gray(name.padEnd(15))}${value}${marker ? ` ${marker}` : ""}\n`
 
 const ok = chalk.green("●")
 const fail = chalk.red("●")
@@ -16,6 +16,10 @@ const fail = chalk.red("●")
 // the meaning by itself.
 const boolLabel = (value: boolean | null): string =>
   value === null ? "unknown" : value ? "on" : "off"
+
+// Oscillation is a sweep-angle preset, so "on" would throw away which angle.
+const sweepLabel = (value: number | null, max: number): string =>
+  value === null ? "unknown" : value === 0 ? "off" : `preset ${value} of ${max}`
 
 const status = async (): Promise<void> => {
   process.stdout.write(header())
@@ -36,17 +40,13 @@ const status = async (): Promise<void> => {
     const fan = await getStatus(localTransport())
     process.stdout.write(label("Connection", "reachable", ok))
     process.stdout.write(label("Power", boolLabel(fan.power)))
-    process.stdout.write(label("Speed", `${fan.speed}/30`))
+    process.stdout.write(label("Speed", fan.speed === null ? "unknown" : `${fan.speed}/30`))
     process.stdout.write(label("Mode", fan.mode ?? "unknown"))
+    process.stdout.write(label("H-oscillation", sweepLabel(fan.horosc, 3)))
+    process.stdout.write(label("V-oscillation", sweepLabel(fan.verosc, 2)))
+    process.stdout.write(label("Night mode", boolLabel(fan.night)))
     process.stdout.write(
-      label(
-        "H-oscillation",
-        fan.swing === 0 ? "off" : `sweep ${fan.swing} of 3`,
-      ),
-    )
-    process.stdout.write(label("V-oscillation", boolLabel(fan.tilt)))
-    process.stdout.write(
-      label("Timer", fan.timer > 0 ? `${fan.timer}h` : "off"),
+      label("Timer", fan.timer ? `${fan.timer}h` : "off"),
     )
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)

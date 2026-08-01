@@ -4,6 +4,24 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.4.0 — 2026-08-01
+
+### Highlights
+
+- **`duux status` and the interactive TUI now work.** Live state — power, speed, mode, both oscillation axes, night mode and timer — reads from your fan, and commands reach it. This never needed a local broker: `@kud/duux` was calling the wrong endpoints, sending commands to the numeric sensor id instead of the device's MAC address and looking for state at a path that doesn't serve it. Requires `@kud/duux@0.4.0`.
+- **Night mode now shows its real state** instead of a permanent `n/a`. The library had documented it as impossible to read back; the fan reports it.
+- **Vertical oscillation is an adjustable 0–2 preset** (off / 45° / 100°), matching horizontal's 0–3. It was a toggle, which made two of its three positions unreachable.
+
+### Fixes
+
+- **A configured local broker no longer hangs the CLI.** With a broker set but not serving your fan, `duux status` blocked indefinitely printing nothing at all — it now fails after ten seconds saying which topic it waited on.
+- Discovery records each fan's MAC address, which is what commands are addressed by. Fans saved before this are detected and prompt you to run `duux discover` again rather than failing obscurely.
+- Fixed the `status` label column being too narrow, which ran "H-oscillation" straight into its value.
+
+Note the local broker remains supported and documented for running without the cloud entirely — it is now an option rather than a requirement.
+
+---
+
 ## 0.3.1 — 2026-08-01
 
 ### Fixes

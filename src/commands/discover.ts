@@ -35,7 +35,12 @@ const discover = async (
   for (const device of result.devices) {
     process.stdout.write(`  ${chalk.cyan(sensorLabel(device))}\n`)
     upsertDevice(
-      { id: device.id, type: device.type, displayName: sensorLabel(device) },
+      {
+        id: device.id,
+        type: device.type,
+        displayName: sensorLabel(device),
+        mac: device.deviceId,
+      },
       { makeCurrent: false },
     )
   }
@@ -72,6 +77,7 @@ const discover = async (
     id: selected.id,
     type: selected.type,
     displayName: sensorLabel(selected),
+    mac: selected.deviceId,
   })
   process.stdout.write(
     chalk.green(`✔ Active fan set to ${sensorLabel(selected)}\n`),

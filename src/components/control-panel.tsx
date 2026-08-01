@@ -9,12 +9,11 @@ import { Hotkeys } from "./hotkeys.js"
 type Row = {
   key: FanParamKey
   label: string
-  // FanState's field names don't match the command param names 1:1
-  // (horosc → swing, verosc → tilt), and "night" has no reported field at
-  // all — see the scaffold report: @kud/duux exposes no way to read back
-  // confirmed night-mode state, only to set it.
   value: (fan: FanState | null) => string | null
 }
+
+const numText = (value: number | null | undefined): string | null =>
+  value === null || value === undefined ? null : String(value)
 
 const boolText = (value: boolean | null | undefined): string | null =>
   value === null || value === undefined ? null : value ? "on" : "off"
@@ -24,31 +23,28 @@ const ROWS: Row[] = [
   {
     key: "speed",
     label: "Speed",
-    value: (fan) => (fan ? String(fan.speed) : null),
+    value: (fan) => numText(fan?.speed),
   },
   { key: "mode", label: "Mode", value: (fan) => fan?.mode ?? null },
   {
     key: "horosc",
     label: "H-Oscillation",
-    value: (fan) => (fan ? String(fan.swing) : null),
+    value: (fan) => numText(fan?.horosc),
   },
   {
     key: "verosc",
     label: "V-Oscillation",
-    value: (fan) => boolText(fan?.tilt),
+    value: (fan) => numText(fan?.verosc),
   },
   {
-    // Not observable — FanState has no "night" field, only the command
-    // exists (see @kud/duux's commands.ts nightModeCommand). Shown as
-    // "n/a" rather than guessed.
     key: "night",
     label: "Night mode",
-    value: () => null,
+    value: (fan) => boolText(fan?.night),
   },
   {
     key: "timer",
     label: "Timer",
-    value: (fan) => (fan ? String(fan.timer) : null),
+    value: (fan) => numText(fan?.timer),
   },
 ]
 
