@@ -14,6 +14,10 @@ type RangeParam = {
   max: number
   step: number
   bigStep: number
+  // Human labels per position, where the number alone says nothing. The
+  // oscillation presets are sweep angles — "60°" is what the fan does, "2 of
+  // 3" is only where it sits in a list.
+  labels?: readonly string[]
 }
 
 type BooleanParam = { kind: "boolean" }
@@ -50,6 +54,7 @@ const HOROSC: RangeParam = {
   max: 3,
   step: 1,
   bigStep: 3,
+  labels: ["off", "30°", "60°", "90°"],
 }
 
 // Vertical oscillation ("verosc"): a three-position tilt preset, 0 (off) /
@@ -61,9 +66,11 @@ const VEROSC: RangeParam = {
   max: 2,
   step: 1,
   bigStep: 2,
+  labels: ["off", "45°", "100°"],
 }
 
 const NIGHT: BooleanParam = { kind: "boolean" }
+const LOCK: BooleanParam = { kind: "boolean" }
 
 // Timer: the API spec gives no upper bound, only "hours" as a non-negative
 // integer. 24 is an unverified UI ceiling, not a value the API rejects above
@@ -83,6 +90,7 @@ const FAN_PARAMS = {
   horosc: HOROSC,
   verosc: VEROSC,
   night: NIGHT,
+  lock: LOCK,
   timer: TIMER,
 } as const
 

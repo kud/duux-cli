@@ -17,8 +17,8 @@ const show = (): void => {
     process.stdout.write(
       `${chalk.gray("○")} No local broker — using the Duux cloud.\n\n` +
         chalk.gray(
-          "  Duux's cloud refuses fan control on most accounts. Running a broker on\n" +
-            "  your own network gets round that entirely.\n\n",
+          "  Optional. duux works against the Duux cloud out of the box; a local\n" +
+            "  broker instead gives you control that works offline.\n\n",
         ) +
         `  Run ${chalk.cyan("duux broker setup")} to get started.\n`,
     )
@@ -37,9 +37,9 @@ const setup = async (): Promise<void> => {
   )
   process.stdout.write(
     chalk.gray(
-      "  Duux's cloud refuses fan control on most accounts. Your fan connects out\n" +
-        `  to ${DUUX_HOST} — so if you run a broker here and point\n` +
-        "  that name at this machine, the fan talks to you instead.\n\n",
+      "  Optional — the cloud works fine. Running your own broker gives you\n" +
+        `  control that works offline. Your fan connects out to ${DUUX_HOST},\n` +
+        "  so pointing that name at this machine makes it talk to you instead.\n\n",
     ),
   )
 

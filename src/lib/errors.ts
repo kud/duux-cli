@@ -1,11 +1,11 @@
-// Duux's cloud answers "Not_Allowed" for status and command requests on most
-// accounts. That is the single most likely failure a user will hit, and the
-// raw API message is a dead end — so it carries the way out with it.
+// "Not_Allowed" from the cloud. Rare now that commands are addressed
+// correctly, but if it does appear the raw API message is a dead end, so it
+// carries a way forward with it.
 const CLOUD_REFUSAL = /Not_Allowed/
 
 const explainError = (message: string): string =>
   CLOUD_REFUSAL.test(message)
-    ? `${message}\nDuux's cloud blocks fan control on most accounts. Run \`duux broker setup\` to control it over your own network instead.`
+    ? `${message}\nIf this persists, run \`duux discover\` to refresh the fan's address, or \`duux doctor\` to check your setup.`
     : message
 
 const isCloudRefusal = (message: string | null): boolean =>

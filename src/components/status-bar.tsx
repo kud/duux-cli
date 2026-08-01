@@ -50,13 +50,18 @@ const StatusBar = ({ device, state, lastAction }: Props) => {
       {/* flexShrink={0} on the left cell: a long error otherwise steals its
           width and "last power on" wraps mid-phrase onto two lines. */}
       <Box justifyContent="space-between" columnGap={2}>
+        {/* Always rendered, placeholder and all: an empty row collapses to
+            zero height, so everything below it jumps the moment a first
+            action appears. */}
         <Box flexShrink={0}>
-          {lastAction && (
-            <Text>
-              <Text color="gray">last </Text>
+          <Text>
+            <Text color="gray">last </Text>
+            {lastAction ? (
               <Text>{lastAction}</Text>
-            </Text>
-          )}
+            ) : (
+              <Text color="gray">—</Text>
+            )}
+          </Text>
         </Box>
         {state.error && (
           <Box flexShrink={1}>

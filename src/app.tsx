@@ -4,16 +4,13 @@ import { getCurrentDevice, type Device, type FanMode } from "@kud/duux"
 import { useSession } from "./hooks/use-session.js"
 import { StatusBar } from "./components/status-bar.js"
 import { ControlPanel, ROWS } from "./components/control-panel.js"
-import { Preferences } from "./components/preferences.js"
-import { readIconStyle } from "./lib/preferences.js"
 import { FAN_PARAMS, clampRange, type FanParamKey } from "./lib/params.js"
+import { useDebouncedSend } from "./hooks/use-debounced-send.js"
 
 const App = () => {
   const [device] = useState<Device | null>(() => getCurrentDevice())
   const [cursor, setCursor] = useState(0)
   const [lastAction, setLastAction] = useState("")
-  const [settingsMode, setSettingsMode] = useState(false)
-  const [iconStyle, setIconStyle] = useState(() => readIconStyle())
   const [optimistic, setOptimistic] = useState<
     Partial<Record<FanParamKey, string>>
   >({})
@@ -26,8 +23,10 @@ const App = () => {
     setMode,
     setOscillation,
     setNightMode,
+    setChildLock,
     setTimer,
   } = useSession()
+  const { send } = useDebouncedSend()
 
   // A pending local value outranks the fan's reported one until the fan
   // confirms it. The session only refreshes `fan` on a poll (30s) or an MQTT
@@ -65,14 +64,17 @@ const App = () => {
     const step = big ? param.bigStep : param.step
     const next = clampRange(param, base + direction * step)
     if (row.key === "speed") {
-      void setSpeed(next)
+      send("speed", () => void setSpeed(next))
       remember(`speed ${next}`, String(next))
     } else if (row.key === "timer") {
-      void setTimer(next)
+      send("timer", () => void setTimer(next))
       remember(`timer ${next}h`, String(next))
     } else if (row.key === "horosc") {
-      void setOscillation("horizontal", next)
+      send("horosc", () => void setOscillation("horizontal", next))
       remember(next === 0 ? "h-osc off" : `h-osc ${next}`, String(next))
+    } else if (row.key === "verosc") {
+      send("verosc", () => void setOscillation("vertical", next))
+      remember(next === 0 ? "v-osc off" : `v-osc ${next}`, String(next))
     }
   }
 
@@ -95,16 +97,16 @@ const App = () => {
     const next = !on
     switch (row.key) {
       case "power":
-        void setPower(next)
+        send("power", () => void setPower(next))
         remember(`power ${next ? "on" : "off"}`, next ? "on" : "off")
         return
-      case "verosc":
-        void setOscillation("vertical", next)
-        remember(`v-osc ${next ? "on" : "off"}`, next ? "on" : "off")
-        return
       case "night":
-        void setNightMode(next)
+        send("night", () => void setNightMode(next))
         remember(`night ${next ? "on" : "off"}`, next ? "on" : "off")
+        return
+      case "lock":
+        send("lock", () => void setChildLock(next))
+        remember(`lock ${next ? "on" : "off"}`, next ? "on" : "off")
         return
     }
   }
@@ -115,17 +117,8 @@ const App = () => {
       return
     }
 
-    // The Preferences panel owns all input while it is open.
-    if (settingsMode) return
-
     if (input === "q") {
       exit()
-      return
-    }
-
-    if (input === "o") {
-      setSettingsMode(true)
-      setLastAction("preferences")
       return
     }
 
@@ -153,7 +146,7 @@ const App = () => {
   })
 
   const columns = stdout.columns ?? 80
-  const contentWidth = Math.max(40, Math.min(64, columns - 6))
+  const contentWidth = Math.max(44, Math.min(88, columns - 8))
   const tooNarrow = columns < 46
 
   return (
@@ -171,20 +164,11 @@ const App = () => {
       <Box flexGrow={1} alignItems="center" justifyContent="center">
         {tooNarrow ? (
           <Text color="yellow">Resize terminal to at least 46 columns.</Text>
-        ) : settingsMode ? (
-          <Preferences
-            width={contentWidth}
-            iconStyle={iconStyle}
-            setIconStyle={setIconStyle}
-            onExit={() => setSettingsMode(false)}
-            onStatus={setLastAction}
-          />
         ) : (
           <ControlPanel
             width={contentWidth}
             fan={state.fan}
             cursor={cursor}
-            iconStyle={iconStyle}
             optimistic={optimistic}
           />
         )}

@@ -112,9 +112,8 @@ const brokerChecks = async (): Promise<Check[]> => {
     return [
       {
         label: "Control path",
-        state: "warn",
-        detail: "Duux cloud — refuses control on most accounts",
-        fix: "duux broker setup",
+        state: "ok",
+        detail: "Duux cloud",
       },
     ]
   }

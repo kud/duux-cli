@@ -36,6 +36,7 @@ const useSession = () => {
     on: number | boolean,
   ) => sessionRef.current?.setOscillation(axis, on)
   const setNightMode = (on: boolean) => sessionRef.current?.setNightMode(on)
+  const setChildLock = (on: boolean) => sessionRef.current?.setChildLock(on)
   const setTimer = (hours: number) => sessionRef.current?.setTimer(hours)
 
   return {
@@ -45,6 +46,7 @@ const useSession = () => {
     setMode,
     setOscillation,
     setNightMode,
+    setChildLock,
     setTimer,
   }
 }

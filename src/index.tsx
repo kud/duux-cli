@@ -12,7 +12,6 @@ import { discover } from "./commands/discover.js"
 import { status } from "./commands/status.js"
 import { debug } from "./commands/debug.js"
 import { switchDevice, listPairedDevices } from "./commands/devices.js"
-import { prefs } from "./commands/prefs.js"
 import {
   show as showBroker,
   setup as setupBroker,
@@ -61,11 +60,6 @@ program
   .command("status")
   .description("Show the current fan's state")
   .action(status)
-
-program
-  .command("prefs")
-  .description("Edit preferences: icon style")
-  .action(prefs)
 
 const brokerCommand = program
   .command("broker")

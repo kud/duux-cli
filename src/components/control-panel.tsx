@@ -3,7 +3,6 @@ import { Box, Text } from "ink"
 import type { FanState } from "@kud/duux"
 import { FAN_PARAMS, type FanParamKey } from "../lib/params.js"
 import { iconFor } from "../lib/icons.js"
-import type { IconStyle } from "../lib/preferences.js"
 import { Hotkeys } from "./hotkeys.js"
 
 type Row = {
@@ -42,6 +41,11 @@ const ROWS: Row[] = [
     value: (fan) => boolText(fan?.night),
   },
   {
+    key: "lock",
+    label: "Child lock",
+    value: (fan) => boolText(fan?.lock),
+  },
+  {
     key: "timer",
     label: "Timer",
     value: (fan) => numText(fan?.timer),
@@ -69,50 +73,78 @@ const RangeBar = ({
   )
 }
 
+// One option in a set. Every pill is the same width whether or not it is the
+// chosen one, so moving the selection never shifts the row — and the filled
+// background carries the state as contrast rather than hue alone, which
+// survives being read in monochrome.
+const Pill = ({ label, selected }: { label: string; selected: boolean }) => (
+  <Text
+    bold={selected}
+    color={selected ? "black" : "#8fa3ad"}
+    backgroundColor={selected ? "cyan" : "#2b323d"}
+  >
+    {` ${label} `}
+  </Text>
+)
+
 const RowView = ({
   row,
   fan,
   active,
-  iconStyle,
   optimistic,
 }: {
   row: Row
   fan: FanState | null
   active: boolean
-  iconStyle: IconStyle
   optimistic?: string
 }) => {
   const param = FAN_PARAMS[row.key]
   const reported = row.value(fan)
   const rawValue = optimistic ?? reported ?? null
   const unconfirmed = optimistic !== undefined
-  const icon = iconFor(row.key, iconStyle)
+  const icon = iconFor(row.key)
 
   const valueNode = (() => {
     if (rawValue === null) return <Text color="gray">n/a</Text>
 
+    // Rendered as a two-position segmented control rather than a single word:
+    // it matches the Duux app, and it keeps every row's value starting in the
+    // same column as the pill and bar rows.
     if (param.kind === "boolean") {
       const on = rawValue === "on"
-      return <Text color={on ? "green" : "gray"}>{on ? "● on" : "○ off"}</Text>
+      return (
+        <Box columnGap={1}>
+          <Pill label="on" selected={on} />
+          <Pill label="off" selected={!on} />
+        </Box>
+      )
     }
 
     if (param.kind === "enum") {
       return (
         <Box columnGap={1}>
           {param.options.map((option) => (
-            <Text
-              key={option}
-              bold={option === rawValue}
-              color={option === rawValue ? "yellow" : "gray"}
-            >
-              {option === rawValue ? `[${option}]` : option}
-            </Text>
+            <Pill key={option} label={option} selected={option === rawValue} />
           ))}
         </Box>
       )
     }
 
     const value = Number(rawValue)
+
+    // A labelled range is a short list of named positions, so show them the
+    // way the fan's own app does — every option visible, the active one
+    // marked — rather than as a bar whose number means nothing on its own.
+    if (param.labels) {
+      return (
+        <Box columnGap={1}>
+          {param.labels.map((label, index) => (
+            <Pill key={label} label={label} selected={index === value} />
+          ))}
+        </Box>
+      )
+    }
+
     return (
       <Box columnGap={1}>
         <RangeBar min={param.min} max={param.max} value={value} />
@@ -128,9 +160,12 @@ const RowView = ({
   return (
     <Box columnGap={1}>
       <Text color={active ? "yellow" : "gray"}>{active ? "❯" : " "}</Text>
-      {icon ? <Text color="cyan">{`${icon} `}</Text> : null}
+      {/* The cell is reserved for the whole column, not per row: rendering
+          nothing when a glyph is missing collapses it and shifts that one row
+          out of line with its neighbours. */}
+      <Text color="cyan">{`${icon || " "} `}</Text>
       <Text bold={active} color={active ? "yellow" : undefined}>
-        {row.label.padEnd(14)}
+        {row.label.padEnd(16)}
       </Text>
       {valueNode}
       {unconfirmed && <Text color="gray"> ·pending</Text>}
@@ -142,44 +177,37 @@ const ControlPanel = ({
   width,
   fan,
   cursor,
-  iconStyle,
   optimistic,
 }: {
   width: number
   fan: FanState | null
   cursor: number
-  iconStyle: IconStyle
   optimistic: Partial<Record<FanParamKey, string>>
 }) => (
-  <Box
-    flexDirection="column"
-    borderStyle="round"
-    borderColor="gray"
-    width={width}
-    paddingX={2}
-    paddingY={1}
-  >
-    <Text bold>Fan control</Text>
-    <Box flexDirection="column" marginTop={1} rowGap={0}>
+  // No border: the panel already sits centred inside the screen frame, so a
+  // second box around it is decoration rather than structure.
+  <Box flexDirection="column" width={width} paddingX={2} paddingY={1}>
+    <Text bold color="yellow">
+      Fan control
+    </Text>
+    <Box flexDirection="column" marginTop={1} rowGap={1}>
       {ROWS.map((row, index) => (
         <RowView
           key={row.key}
           row={row}
           fan={fan}
           active={index === cursor}
-          iconStyle={iconStyle}
           optimistic={optimistic[row.key]}
         />
       ))}
     </Box>
-    <Box marginTop={1}>
+    <Box marginTop={2}>
       <Hotkeys
         hints={[
           { key: "↑↓", label: "select" },
           { key: "←→", label: "adjust" },
           { key: "⇧←→", label: "adjust ×big" },
           { key: "↵/spc", label: "toggle/cycle" },
-          { key: "o", label: "prefs" },
           { key: "q", label: "quit" },
         ]}
       />

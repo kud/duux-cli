@@ -1,12 +1,16 @@
 import chalk from "chalk"
 import { getStatus, getCurrentDevice, CONFIG_PATH } from "@kud/duux"
 import { localTransport } from "../lib/transport.js"
+import { FAN_PARAMS } from "../lib/params.js"
 import { explainError } from "../lib/errors.js"
 
 const header = () => `${chalk.bold("Duux")}${chalk.dim(" · status")}\n\n`
 
 const label = (name: string, value: string, marker = "") =>
   `  ${chalk.gray(name.padEnd(15))}${value}${marker ? ` ${marker}` : ""}\n`
+
+const HOROSC_LABELS = FAN_PARAMS.horosc.labels ?? []
+const VEROSC_LABELS = FAN_PARAMS.verosc.labels ?? []
 
 const ok = chalk.green("●")
 const fail = chalk.red("●")
@@ -17,9 +21,10 @@ const fail = chalk.red("●")
 const boolLabel = (value: boolean | null): string =>
   value === null ? "unknown" : value ? "on" : "off"
 
-// Oscillation is a sweep-angle preset, so "on" would throw away which angle.
-const sweepLabel = (value: number | null, max: number): string =>
-  value === null ? "unknown" : value === 0 ? "off" : `preset ${value} of ${max}`
+// Oscillation is a sweep angle, so report the angle — "preset 1" says nothing
+// the fan actually does. Labels mirror src/lib/params.ts.
+const sweepLabel = (value: number | null, labels: readonly string[]): string =>
+  value === null ? "unknown" : (labels[value] ?? String(value))
 
 const status = async (): Promise<void> => {
   process.stdout.write(header())
@@ -42,9 +47,10 @@ const status = async (): Promise<void> => {
     process.stdout.write(label("Power", boolLabel(fan.power)))
     process.stdout.write(label("Speed", fan.speed === null ? "unknown" : `${fan.speed}/30`))
     process.stdout.write(label("Mode", fan.mode ?? "unknown"))
-    process.stdout.write(label("H-oscillation", sweepLabel(fan.horosc, 3)))
-    process.stdout.write(label("V-oscillation", sweepLabel(fan.verosc, 2)))
+    process.stdout.write(label("H-oscillation", sweepLabel(fan.horosc, HOROSC_LABELS)))
+    process.stdout.write(label("V-oscillation", sweepLabel(fan.verosc, VEROSC_LABELS)))
     process.stdout.write(label("Night mode", boolLabel(fan.night)))
+    process.stdout.write(label("Child lock", boolLabel(fan.lock)))
     process.stdout.write(
       label("Timer", fan.timer ? `${fan.timer}h` : "off"),
     )

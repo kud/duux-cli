@@ -4,6 +4,27 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.5.0 — 2026-08-01
+
+### Highlights
+
+- **The control panel now reads like the Duux app.** Options are segmented pills with a filled background instead of `[brackets]`, oscillation shows real angles — `off 30° 60° 90°` and `off 45° 100°` — and on/off toggles are two-position controls. Rows have breathing room, the panel border is gone, and the layout is wider.
+- **Child lock added**, and **night mode is no longer offered as a fan mode** — the fan has exactly two, Normal and Natural Wind, with night as its own toggle.
+- **Commands are debounced.** Holding an arrow used to fire one command per keypress and send the fan lurching through every intermediate value; the display still updates instantly, but only the value you settle on is sent.
+
+### Fixes
+
+- **`·pending` now clears.** State is re-read shortly after each command rather than waiting for the next 30-second poll.
+- **Every row's value starts in the same column.** A missing Nerd Font glyph collapsed the icon column and shifted that row out of line; the column is now reserved whether or not a glyph exists, and child lock has one.
+- **The status bar no longer jumps.** Its `last` line collapsed to zero height when empty, shifting everything below it the moment a first action appeared.
+- `duux status` reports oscillation as angles rather than preset numbers, and includes child lock.
+
+### Removed
+
+- **`duux prefs` and the icon-style preference.** A whole command, component and docs page for one cosmetic toggle; Nerd Font glyphs are simply always on.
+
+---
+
 ## 0.4.0 — 2026-08-01
 
 ### Highlights
