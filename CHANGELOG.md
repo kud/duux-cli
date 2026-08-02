@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.9.0 — 2026-08-02
+
+### Highlights
+
+- **duux tells you when there is a newer version**, and offers to install it. The banner appears before the CLI's own output, is silent whenever stdout is not a terminal (so `duux status --json | jq` is untouched), and never waits on the network — the check reads a cache and refreshes in the background for next time. Shared with every other @kud CLI via the new [`@kud/cli-update`](https://github.com/kud/cli-update).
+
+---
 ## 0.8.0 — 2026-08-01
 
 ### Highlights
