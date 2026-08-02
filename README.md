@@ -13,6 +13,10 @@
 
 <a href="https://kud.io/projects/duux-cli">Website</a> · <a href="https://kud.io/projects/duux-cli/docs">Documentation</a>
 
+<br>
+
+<img src="https://raw.githubusercontent.com/kud/duux-cli/main/assets/screenshot.png" alt="The duux control panel: power, speed, mode, oscillation, night mode, child lock and timer, with the fan's live state" width="820">
+
 </div>
 
 ## Features
