@@ -29,10 +29,10 @@
     "dist"
   ],
   "scripts": {
-    "dev": "tsx src/index.tsx",
-    "dev:discover": "tsx src/index.tsx discover",
-    "build": "tsup src/index.tsx --format esm --dts",
-    "build:watch": "tsup src/index.tsx --format esm --dts --watch",
+    "dev": "NODE_ENV=development tsx src/index.ts",
+    "dev:discover": "NODE_ENV=development tsx src/index.ts discover",
+    "build": "tsup src/index.ts --format esm --dts",
+    "build:watch": "tsup src/index.ts --format esm --dts --watch",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
     "link": "npm run build && npm link",
