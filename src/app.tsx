@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Box, Text, useApp, useInput, useStdout } from "ink"
+import { Box, Text, useApp, useInput, useWindowSize } from "ink"
 import { getCurrentDevice, type Device, type FanMode } from "@kud/duux"
 import { useSession } from "./hooks/use-session.js"
 import { StatusBar } from "./components/status-bar.js"
@@ -17,7 +17,7 @@ const App = ({ version }: { version: string }) => {
     Partial<Record<FanParamKey, string>>
   >({})
   const { exit } = useApp()
-  const { stdout } = useStdout()
+  const { columns, rows } = useWindowSize()
   const {
     state,
     setPower,
@@ -174,7 +174,6 @@ const App = ({ version }: { version: string }) => {
     }
   })
 
-  const columns = stdout.columns ?? 80
   const contentWidth = Math.max(44, Math.min(88, columns - 8))
   const tooNarrow = columns < 46
 
@@ -185,7 +184,7 @@ const App = ({ version }: { version: string }) => {
       borderColor="gray"
       borderDimColor
       width={columns}
-      height={stdout.rows}
+      height={rows}
       paddingX={2}
       paddingY={1}
     >
